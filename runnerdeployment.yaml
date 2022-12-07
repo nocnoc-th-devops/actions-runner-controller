@@ -1,0 +1,29 @@
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerDeployment
+metadata:
+  namespace: self-host-runners
+  name: runner-deployment
+spec:
+  template:
+    spec:
+      repository: input/repository
+
+---  
+
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: HorizontalRunnerAutoscaler
+metadata:
+  namespace: self-host-runners
+  name: runner-deployment-autoscaler
+spec:
+  scaleTargetRef:
+    name: runner-deployment
+  scaleDownDelaySecondsAfterScaleOut: 300
+  minReplicas: 1
+  maxReplicas: 5
+  metric:
+  - type: TotalNumberOfQueuedAndInProgressWorkflowRuns
+    repositoryNames:
+    - input/repository
+
+ 
